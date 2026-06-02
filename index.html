@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>おーぷん風掲示板 (仮)</title>
     <style>
-        /* ベース設定（フォントをメイリオに変更） */
+        /* ベース設定（フォントはメイリオ） */
         body {
             background-color: #ffffff;
             color: #000000;
@@ -112,12 +112,6 @@
             border-top: 1px solid #ccc;
             padding-top: 10px;
         }
-
-        /* 読み込み中の文字色 */
-        .loading-text {
-            color: #888;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
@@ -169,8 +163,12 @@
             </div>
 
             <h3>■ 人気の板 ■</h3>
-            <ul id="popular-board-list" class="thread-list">
-                <li class="loading-text">データを取得中...</li>
+            <ul class="thread-list">
+                <li>・<a href="#">なんでも実況J</a></li>
+                <li>・<a href="#">ニュース速報</a></li>
+                <li>・<a href="#">VIP</a></li>
+                <li>・<a href="#">プログラミング</a></li>
+                <li>・<a href="#">アニメ</a></li>
             </ul>
         </div>
     </div>
@@ -179,51 +177,5 @@
         &copy; 2026 おーぷん風掲示板 (仮)
     </div>
 
-    <script>
-        // 取得先のURL（※実際にデータが置かれているJSONファイル等のパスを指定してください）
-        const TARGET_URL = 'https://ritsu1000000-maker.github.io/2ch.vip/popular.json'; 
-
-        // 更新間隔（ミリ秒） - 例: 30000 = 30秒
-        const REFRESH_INTERVAL = 30000; 
-
-        async function fetchPopularBoards() {
-            try {
-                // キャッシュを無視して最新データを取得
-                const fetchUrl = TARGET_URL + '?t=' + new Date().getTime();
-                const response = await fetch(fetchUrl);
-                
-                if (!response.ok) {
-                    throw new Error('ネットワークエラー: ' + response.status);
-                }
-
-                const data = await response.json();
-                const listElement = document.getElementById('popular-board-list');
-                
-                // 現在のリストを一旦空にする
-                listElement.innerHTML = '';
-
-                // 取得したJSONデータをループしてリストに追加
-                data.forEach(board => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `・<a href="${board.url}">${board.name}</a>`;
-                    listElement.appendChild(li);
-                });
-
-            } catch (error) {
-                console.error('人気の板の取得に失敗しました:', error);
-                const listElement = document.getElementById('popular-board-list');
-                // 初回読み込みで失敗した時のみエラーメッセージを表示
-                if (listElement.innerHTML.includes('データを取得中')) {
-                    listElement.innerHTML = '<li style="color:red;">データの取得に失敗しました。</li>';
-                }
-            }
-        }
-
-        // ページ読み込み完了時に最初の1回を実行し、その後定期更新
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchPopularBoards();
-            setInterval(fetchPopularBoards, REFRESH_INTERVAL);
-        });
-    </script>
 </body>
 </html>
