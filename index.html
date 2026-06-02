@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おーぷん風掲示板 (仮)</title>
+    <style>
+        /* 2ちゃんねる風のベース設定 */
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: "ＭＳ Ｐゴシック", "MS PGothic", "Mona", sans-serif;
+            margin: 0;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.3;
+        }
+        
+        a {
+            color: #0000FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 5px 0;
+        }
+        .header-links {
+            font-size: 14px;
+        }
+
+        .search-box {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #efefef;
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .container {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .menu {
+            width: 220px;
+            background-color: #eeeeee;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .menu h2 {
+            font-size: 14px;
+            margin: 10px 0 2px 0;
+            border-bottom: 1px solid #aaa;
+            color: #333;
+        }
+        .menu h2:first-child {
+            margin-top: 0;
+        }
+        .new-mark {
+            color: red;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .main {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .info-box {
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #ffffee;
+            font-size: 14px;
+        }
+
+        .main h3 {
+            font-size: 16px;
+            background-color: #dddddd;
+            padding: 5px;
+            border: 1px solid #ccc;
+            margin-top: 0;
+        }
+
+        ul.thread-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        ul.thread-list li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        /* 読み込み中の文字色 */
+        .loading-text {
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>おーぷん風掲示板 (仮)</h1>
+        <div class="header-links">
+            [ <a href="#">ホーム</a> | <a href="#">ガイドライン</a> | <a href="#">削除依頼</a> | <a href="#">運営情報</a> ]
+        </div>
+    </div>
+
+    <div class="search-box">
+        <form action="https://www.google.com/search" method="get" target="_blank">
+            <input type="hidden" name="sitesearch" value="ritsu1000000-maker.github.io/2ch.vip">
+            スレッド検索: <input type="text" name="q" size="40" placeholder="キーワードを入力">
+            <input type="submit" value="検索する">
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="menu">
+            <h2>地震・災害</h2>
+            <a href="#">地震速報</a><br>
+            <a href="#">防災</a><br>
+
+            <h2>ニュース</h2>
+            <a href="#">ニュース速報</a> <span class="new-mark">New!</span><br>
+            <a href="#">痛いニュース</a><br>
+            <a href="#">政治・経済</a><br>
+
+            <h2>雑談</h2>
+            <a href="#">なんでも実況J</a><br>
+            <a href="#">VIP</a><br>
+            <a href="#">ラウンジ</a><br>
+            <a href="#">おーぷんサロン</a><br>
+
+            <h2>趣味・生活</h2>
+            <a href="#">プログラミング</a><br>
+            <a href="#">アニメ</a><br>
+            <a href="#">ゲーム</a><br>
+            <a href="#">自作PC</a><br>
+        </div>
+
+        <div class="main">
+            <div class="info-box">
+                <b>【運営からのお知らせ】</b><br>
+                ・2026/06/02 サーバーのメンテナンスが完了しました。<br>
+                ・荒らし行為を発見した場合は、速やかに削除依頼スレへ報告をお願いします。
+            </div>
+
+            <h3>■ 人気の板 ■</h3>
+            <ul id="popular-board-list" class="thread-list">
+                <li class="loading-text">データを取得中...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 おーぷん風掲示板 (仮)
+    </div>
+
+    <script>
+        // 取得先のURL（※実際にデータが置かれているJSONファイル等のパスを指定してください）
+        // 例: https://ritsu1000000-maker.github.io/2ch.vip/popular.json
+        const TARGET_URL = 'https://ritsu1000000-maker.github.io/2ch.vip/popular.json'; 
+
+        // 更新間隔（ミリ秒） - 例: 30000 = 30秒
+        const REFRESH_INTERVAL = 30000; 
+
+        async function fetchPopularBoards() {
+            try {
+                // キャッシュを無視して最新データを取得するために、URLの末尾に現在のタイムスタンプを付与します
+                const fetchUrl = TARGET_URL + '?t=' + new Date().getTime();
+                
+                const response = await fetch(fetchUrl);
+                
+                if (!response.ok) {
+                    throw new Error('ネットワークエラー: ' + response.status);
+                }
+
+                const data = await response.json();
+                const listElement = document.getElementById('popular-board-list');
+                
+                // 現在のリストを一旦空にする
+                listElement.innerHTML = '';
+
+                // 取得したJSONデータをループしてリストに追加
+                // （JSONの構造に合わせて data.forEach 等を調整してください）
+                data.forEach(board => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `・<a href="${board.url}">${board.name}</a>`;
+                    listElement.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error('人気の板の取得に失敗しました:', error);
+                const listElement = document.getElementById('popular-board-list');
+                // 初回読み込みで失敗した時のみエラーメッセージを表示（更新時の失敗は画面維持）
+                if (listElement.innerHTML.includes('データを取得中')) {
+                    listElement.innerHTML = '<li style="color:red;">データの取得に失敗しました。</li>';
+                }
+            }
+        }
+
+        // ページ読み込み完了時に最初の1回を実行
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchPopularBoards();
+            // その後、指定した間隔（REFRESH_INTERVAL）で自動更新を繰り返す
+            setInterval(fetchPopularBoards, REFRESH_INTERVAL);
+        });
+    </script>
+</body>
+</html>
