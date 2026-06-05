@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>おーぷん風掲示板 (仮)</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
+        /* ベース設定（フォントはメイリオ） */
         body {
             background-color: #ffffff;
             color: #000000;
@@ -15,58 +15,97 @@
             font-size: 16px;
             line-height: 1.4;
         }
-        a { color: #0000FF; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .header { text-align: center; margin-bottom: 15px; }
-        .header h1 { font-size: 28px; margin: 5px 0; }
-        .header-links { font-size: 14px; }
+        /* 青いリンクのスタイル */
+        a {
+            color: #0000FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 5px 0;
+        }
+        .header-links {
+            font-size: 14px;
+        }
         .search-box {
-            text-align: center; margin-bottom: 20px;
-            background-color: #efefef; padding: 8px; border: 1px solid #ccc; font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #efefef;
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
         }
-        .container { display: flex; align-items: flex-start; }
+        .container {
+            display: flex;
+            align-items: flex-start;
+        }
         .menu {
-            width: 220px; background-color: #eeeeee; padding: 10px;
-            border: 1px solid #ccc; font-size: 14px; line-height: 1.6;
+            width: 220px;
+            background-color: #eeeeee;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            line-height: 1.6;
         }
-        .menu h2 { font-size: 14px; margin: 10px 0 2px 0; border-bottom: 1px solid #aaa; color: #333; }
-        .menu h2:first-child { margin-top: 0; }
-        .new-mark { color: red; font-size: 12px; font-weight: bold; }
-        .main { flex: 1; padding: 0 20px; }
+        .menu h2 {
+            font-size: 14px;
+            margin: 10px 0 2px 0;
+            border-bottom: 1px solid #aaa;
+            color: #333;
+        }
+        .menu h2:first-child {
+            margin-top: 0;
+        }
+        .new-mark {
+            color: red;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .main {
+            flex: 1;
+            padding: 0 20px;
+        }
         .info-box {
-            border: 1px solid #333; padding: 10px; margin-bottom: 20px;
-            background-color: #ffffee; font-size: 14px;
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #ffffee;
+            font-size: 14px;
         }
         .main h3 {
-            font-size: 16px; background-color: #dddddd; padding: 5px;
-            border: 1px solid #ccc; margin-top: 0;
+            font-size: 16px;
+            background-color: #dddddd;
+            padding: 5px;
+            border: 1px solid #ccc;
+            margin-top: 0;
         }
-        ul.thread-list { list-style-type: none; padding: 0; margin: 0 0 20px 0; }
-        ul.thread-list li { margin-bottom: 8px; font-size: 16px; }
-        .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }
-
-        /* reCAPTCHA用のスタイル */
-        #recaptcha-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ffffff; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
+        ul.thread-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0 0 20px 0;
         }
-        #recaptcha-overlay h2 { margin-bottom: 20px; font-size: 20px; color: #333; }
+        ul.thread-list li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
     </style>
 </head>
 <body>
-
-    <div id="recaptcha-overlay">
-        <h2>掲示板へアクセスするには認証を行ってください</h2>
-        <div class="g-recaptcha" data-sitekey="6Lf6cg0tAAAAABvo9nmXwf1OYbnY-N9HeckGRFDR" data-callback="onRecaptchaSuccess"></div>
-    </div>
-
-    <script>
-        function onRecaptchaSuccess() {
-            document.getElementById('recaptcha-overlay').style.display = 'none';
-        }
-    </script>
-
     <div class="header">
         <h1>おーぷん風掲示板 (仮)</h1>
         <div class="header-links">
